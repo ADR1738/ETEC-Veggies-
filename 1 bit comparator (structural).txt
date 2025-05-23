@@ -1,0 +1,32 @@
+
+
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity comparator_onebit is
+    port(
+        A, B : in  std_logic;
+        A_gt_in : in  std_logic;
+        A_eq_in : in  std_logic;
+        A_lt_in : in  std_logic;
+        A_gt_out :out std_logic;
+        A_eq_out :out std_logic;
+        A_lt_out :out std_logic);
+end comparator_onebit;
+
+architecture behavioral of comparator_onebit is
+begin
+    process(A, B, A_gt_in, A_eq_in, A_lt_in)
+    begin
+        if A = '1' and B = '0' then
+            A_gt_out <= '1'; A_eq_out <= '0'; A_lt_out <= '0';
+        elsif A = '0' and B = '1' then
+            A_gt_out <= '0'; A_eq_out <= '0';A_lt_out <= '1';
+        elsif A = B then
+            A_gt_out <= A_gt_in;
+            A_eq_out <= A_eq_in;
+            A_lt_out <= A_lt_in;
+        end if;
+    end process;
+end behavioral;
