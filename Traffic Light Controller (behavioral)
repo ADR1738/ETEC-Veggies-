@@ -1,0 +1,34 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity tb_traffic_light is
+end tb_traffic_light;
+
+architecture test of tb_traffic_light is
+
+-- DUT signals
+signal clk : std_logic := '0';
+signal reset : std_logic := '1';
+signal red : std_logic;
+signal yellow : std_logic;
+signal green : std_logic;
+
+-- Clock period constant
+constant clk_period : time := 10 ns;
+
+begin
+
+-- Instantiate the Unit Under Test (UUT)
+uut: entity work.traffic_light_controller
+port map (
+clk => clk,
+reset => reset,
+red => red,
+yellow => yellow,
+green => green
+);
+
+-- Clock generation
+clk_process : process
+begin
