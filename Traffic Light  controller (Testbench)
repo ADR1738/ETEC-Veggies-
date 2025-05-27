@@ -1,0 +1,57 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity tb_traffic_light is
+end tb_traffic_light;
+
+architecture test of tb_traffic_light is
+
+-- DUT signals
+signal clk : std_logic := '0';
+signal reset : std_logic := '1';
+signal red : std_logic;
+signal yellow : std_logic;
+signal green : std_logic;
+
+-- Clock period constant
+constant clk_period : time := 10 ns;
+
+begin
+
+-- Instantiate the Unit Under Test (UUT)
+uut: entity work.traffic_light_controller
+port map (
+clk => clk,
+reset => reset,
+red => red,
+yellow => yellow,
+green => green
+);
+
+-- Clock generation
+clk_process : process
+begin
+while true loop
+clk <= '0';
+wait for clk_period / 2;
+clk <= '1';
+wait for clk_period / 2;
+end loop;
+end process;
+
+-- Stimulus process
+stim_proc: process
+begin
+-- Hold reset high for a few clock cycles
+wait for 20 ns;
+reset <= '0';
+
+-- Let the FSM run for several cycles
+wait for 1500 ns;
+
+-- Finish simulation
+wait;
+end process;
+
+end test;
