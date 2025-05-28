@@ -2,33 +2,67 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity tb_traffic_light is
-end tb_traffic_light;
-
-architecture test of tb_traffic_light is
-
--- DUT signals
-signal clk : std_logic := '0';
-signal reset : std_logic := '1';
-signal red : std_logic;
-signal yellow : std_logic;
-signal green : std_logic;
-
--- Clock period constant
-constant clk_period : time := 10 ns;
-
-begin
-
--- Instantiate the Unit Under Test (UUT)
-uut: entity work.traffic_light_controller
-port map (
-clk => clk,
-reset => reset,
-red => red,
-yellow => yellow,
-green => green
+entity traffic_light_controller is
+port (
+clk : in std_logic;
+reset : in std_logic;
+red : out std_logic;
+yellow : out std_logic;
+green : out std_logic
 );
+end traffic_light_controller;
 
--- Clock generation
-clk_process : process
+architecture behavioral of traffic_light_controller is
+
+-- State declaration
+type state_type is (RED, GREEN, YELLOW);
+signal state, next_state : state_type;
+
+-- Timer counter
+signal count : integer := 0;
+constant RED_TIME : integer := 5;
+constant GREEN_TIME : integer := 5;
+constant YELLOW_TIME : integer := 2;
+
 begin
+
+-- State transition process
+process(clk, reset)
+begin
+if reset = '1' then
+state <= RED;
+count <= 0;
+elsif rising_edge(clk) then
+if (state = RED and count = RED_TIME) then
+state <= GREEN;
+count <= 0;
+elsif (state = GREEN and count = GREEN_TIME) then
+state <= YELLOW;
+count <= 0;
+elsif (state = YELLOW and count = YELLOW_TIME) then
+state <= RED;
+count <= 0;
+else
+count <= count + 1;
+end if;
+end if;
+end process;
+
+-- Output logic process
+process(state)
+begin
+red <= '0';
+yellow <= '0';
+green <= '0';
+
+case state is
+when RED =>
+red <= '1';
+when GREEN =>
+green <= '1';
+when YELLOW =>
+yellow <= '1';
+end case;
+end process;
+
+end behavioral;
