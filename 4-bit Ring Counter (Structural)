@@ -1,0 +1,32 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity ring_counter_4bit is
+    port (
+        clk   : in  std_logic;
+        reset : in  std_logic;
+        q     : out std_logic_vector(3 downto 0)
+    );
+end ring_counter_4bit;
+
+architecture structural of ring_counter_4bit is
+    -- Internal signals to connect DFFs
+    signal d     : std_logic_vector(3 downto 0);
+    signal q_sig : std_logic_vector(3 downto 0);
+begin
+    -- Feedback to create the ring
+    d(0) <= q_sig(3);  -- Last output back to first input
+    d(1) <= q_sig(0);
+    d(2) <= q_sig(1);
+    d(3) <= q_sig(2);
+
+    -- Instantiate 4 D flip-flops
+    ff0: entity work.d_ff port map(clk => clk, reset => reset, d => d(0), q => q_sig(0));
+    ff1: entity work.d_ff port map(clk => clk, reset => reset, d => d(1), q => q_sig(1));
+    ff2: entity work.d_ff port map(clk => clk, reset => reset, d => d(2), q => q_sig(2));
+    ff3: entity work.d_ff port map(clk => clk, reset => reset, d => d(3), q => q_sig(3));
+
+    -- Output
+    q <= q_sig;
+
+end structural;
